@@ -107,5 +107,139 @@ describe('functions', () => {
             });
         });
 
+        //all array methods are immutable, they do not modify the original array object 
+        describe('array methods', () => {
+            const numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+
+            it('has a way to visit each element of the array', () => {
+                numbers.forEach((e, i, c) => {
+                    console.log(e, i, c);
+                })
+                //e = element, i = index, c = whole array
+
+                function logIt(e: number, i: number, c: number[]) {
+                    console.log({ e, i, c });
+                }
+                numbers.forEach(logIt);
+            });
+
+            describe('array methods that return a new array', () => {
+                it('filtering an array', () => {
+                    const evens = numbers.filter(e => e % 2 === 0)
+
+                    expect(evens).toEqual([2, 4, 6, 8]);
+                });
+
+                it('transform each element into a new thing for a new array', () => {
+                    const doubled = numbers.map(n => n * 2)
+                    expect(doubled).toEqual([2, 4, 6, 8, 10, 12, 14, 16, 18])
+
+                    const answer = numbers
+                        .filter(n => n % 2 === 0)
+                        .map(n => n * 2)
+                        .map(n => n.toString())
+
+                    expect(answer).toEqual(['4', '8', '12', '16']);
+                    //new array that is evens that are turned into strings and multiplied by 2 
+                });
+            });
+
+            describe('array methods that return a single value', () => {
+
+                it('check membership', () => {
+                    const allEven = numbers.every(n => n % 2 === 0);
+                    //if every element is even, it returns true
+
+                    const anyEven = numbers.some(n => n % 2 === 0);
+                    //if at least 1 element is even, return true
+                });
+
+                it('boiling array down into 1 thing using reduce', () => {
+                    const total = numbers.reduce((state, next) => state + next);
+                    expect(total).toBe(45);
+
+                    const total2 = numbers.reduce((state, next) => state + next, 100);
+                    expect(total2).toBe(145);
+                });
+
+                describe('a couple of practices', () => {
+
+                    it('try this one', () => {
+                        interface Vehicle {
+                            vin: string;
+                            make: string;
+                            model: string;
+                            mileage: number;
+                        }
+
+                        const vehicles: Vehicle[] = [
+                            { vin: '89888', make: 'Chevy', model: 'Bolt', mileage: 18_230 },
+                            { vin: '8389h3i38', make: 'Honda', model: 'Pilot', mileage: 52_123 },
+                            { vin: '7390399333', make: 'Ram', model: '1500', mileage: 83_238 }
+                        ];
+
+                        // our rule is a high-mileage vehicle is any vehicle with 50,000 or over.
+                        const highMileageVehicles = vehicles
+                            .filter(vehicle => vehicle.mileage >= 50_000)
+                            .map(vehicle => `${vehicle.make} ${vehicle.model}`)
+
+                        expect(highMileageVehicles).toEqual(['Honda Pilot', 'Ram 1500']);
+                    });
+
+                    it('another practice', () => {
+                        interface Game {
+                            name: string;
+                            score: number;
+                        }
+
+                        const bowlingNight: Game[] = [
+                            { name: 'Jeff', score: 120 },
+                            { name: 'Stacey', score: 260 },
+                            { name: 'Henry', score: 110 },
+                            { name: 'Violet', score: 135 }
+                        ];
+
+                        interface BowlingSummary {
+                            highScore: number,
+                            highScorer: string,
+                            lowScore: number,
+                            lowScorer: string
+                        }
+                        const initialState: BowlingSummary = {
+                            highScore: -1,
+                            highScorer: null,
+                            lowScore: 301,
+                            lowScorer: null
+                        }
+                        // Your Code Here
+                        const result = bowlingNight.reduce((state: BowlingSummary, next: Game) => {
+                            if (next.score > state.highScore) {
+                                state.highScore = next.score;
+                                state.highScorer = next.name;
+                            }
+                            if (next.score < state.lowScore) {
+                                state.lowScore = next.score;
+                                state.lowScorer = next.name;
+                            }
+                            return state;
+                        }, initialState)
+
+
+                        expect(result).toEqual({
+                            highScore: 260,
+                            highScorer: 'Stacey',
+                            lowScore: 110,
+                            lowScorer: 'Henry'
+                        });
+
+                        // if you get this done, how would you handle ties?
+                    });
+
+                });
+
+            });
+
+        });
+
     });
 });
