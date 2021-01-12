@@ -1,3 +1,5 @@
+import { Message } from "../src/message";
+
 describe('variables and types in typescript', () => {
     it('untyped variables', () => {
         let x;
@@ -127,8 +129,127 @@ describe('variables and types in typescript', () => {
                 const both: Array<string | number> = [1, 2, 'string'];
             });
 
+            it('type aliases', () => {
+                type ThingWithLettersAndStuff = string;
+                const myName: ThingWithLettersAndStuff = "Christopher";
+
+                type MorseCode = 'dot' | 'dash';
+
+                const someDot: MorseCode = 'dot';
+                const message: MorseCode[] = ['dot', 'dash', 'dot', 'dash'];
+            });
         });
 
+        describe('tuple types', () => {
+            it('basic syntax', () => {
+                type Musician = [string, string, number, string];
+                const warren: Musician = ['Warren', 'Ellis', 58, 'Guitar'];
+
+                const age = warren[2];
+                const instrument = warren[3];
+            });
+
+            describe('an example', () => {
+                it('first an OOP would do it this way', () => {
+                    //names are formatted as last, first
+                    function formatName(first: string, last: string): { fullName: string, numberOfLetters: number } {
+                        const name = `${last}, ${first}`;
+                        return {
+                            fullName: name,
+                            numberOfLetters: name.length
+                        }
+                    }
+
+                    const result = formatName('Han', 'Solo');
+                    expect(result.fullName).toBe('Solo, Han');
+                    expect(result.numberOfLetters).toBe(9);
+                });
+                it('Here is how you might do it with a tuple type', () => {
+
+                    function formatName(first: string, last: string): [string, number] {
+                        const name = `${last}, ${first}`
+                        return [name, name.length];
+
+                        const result = formatName('Han', 'Solo');
+                        expect(result[0]).toBe('Solo, Han');
+                        expect(result[1]).toBe(9);
+                    }
+                });
+            });
+            describe('destructuring', () => {
+                it('has object destructuring', () => {
+                    const dataFromApi = { name: 'Bob Smith', phone: '555-5555', age: 52, eyecolor: 'Blue' }
+
+                    /*
+                    const name = dataFromApi.name;
+                    const phoneNumber = dataFromApi.phone;
+                    */
+
+                    //creates new 'const' variable for each property declared. makes a 'name' variable that is the name value, and a 'phoneNumber' variable that is the phone value
+                    const { name, phone: phoneNumber } = dataFromApi
+
+                    expect(name).toBe('Bob Smith');
+                    expect(phoneNumber).toBe('555-5555');
+                });
+            });
+        });
+
+        describe('object literals', () => {
+            it('a few details', () => {
+                interface Song {
+                    title: String
+                    artist: String
+                    lastPlayed: String
+                    numberOfSecondsLong: number
+                    yearReleased?: number
+                }
+
+                const song1: Song = {
+                    title: 'Renegades of Funk',
+                    artist: 'Rage Against the Machine',
+                    lastPlayed: 'This morning',
+                    numberOfSecondsLong: 333
+                }
+            });
+
+            it('duck typing - aka structural typing', () => {
+                //saying that this method requires a from and message property. can be any object just needs those properties
+                /*
+                function logInfo(message: { from: string, message: string }) {
+                    console.log(`Logging: ${message.from} message: ${message.message}`);
+                }
+                */
+
+                function logInfo(message: Message) {
+                    console.log(`Logging: ${message.from} message: ${message.message}`);
+                }
+
+                const phoneCall: Message = { from: 'Mom', message: 'Call me back!' }
+                logInfo(phoneCall);
+            });
+        });
+
+        describe('function literals', () => {
+            it('has three ways to create them', () => {
+                //named function
+                function add(a: number, b: number): number {
+                    return a + b;
+                }
+
+                //anonymous functions
+                const subtract = function (a: number, b: number): number {
+                    return a - b;
+                }
+
+                const multiply = (a: number, b: number): number => a * b;
+
+            });
+
+        });
     });
+
+
+
+
 
 });
